@@ -54,3 +54,9 @@ Abrir http://127.0.0.1:5000
 - **LOW** -- Proceso en whitelist (firefox, spotify, chrome, etc.)
 - **MEDIUM** -- Conexión externa a puerto común (443, 80, 53, 22)
 - **HIGH** -- Puerto peligroso (4444, 1337, 31337), proceso sospechoso (nc, python, nmap) o IP externa en puerto alto
+
+## Capturas de pantalla
+
+![Dashboard 3](dashboard_3.png)
+
+![Dashboard 4](dashboard_4.png)
