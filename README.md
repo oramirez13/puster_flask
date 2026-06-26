@@ -14,7 +14,7 @@ Dashboard de monitoreo de seguridad que escanea conexiones de red activas, clasi
 - GCC
 - `ss` (iproute2, incluido en Linux)
 
-## Instalacion
+## Instalación
 
 ```bash
 python3 -m venv .venv
@@ -32,25 +32,25 @@ Abrir http://127.0.0.1:5000
 
 ### Variables de entorno
 
-| Variable | Default | Descripcion |
-|---|---|---|
-| `PUSTER_PORT` | 5000 | Puerto del servidor |
-| `PUSTER_HOST` | 127.0.0.1 | Host donde escucha |
-| `PUSTER_DEBUG` | false | Modo debug de Flask |
+| Variable       | Default   | Descripcion         |
+| -------------- | --------- | ------------------- |
+| `PUSTER_PORT`  | 5000      | Puerto del servidor |
+| `PUSTER_HOST`  | 127.0.0.1 | Host donde escucha  |
+| `PUSTER_DEBUG` | false     | Modo debug de Flask |
 
 ## Endpoints
 
-| Ruta | Descripcion |
-|---|---|
-| `GET /` | Dashboard web |
-| `GET /scan` | Ejecuta escaneo de red |
-| `GET /data` | Datos completos en JSON |
-| `GET /api/alerts?risk=HIGH&process=firefox` | Alertas filtradas |
-| `GET /export/csv` | Descargar CSV |
-| `GET /export/pdf` | Descargar PDF |
+| Ruta                                        | Descripcion             |
+| ------------------------------------------- | ----------------------- |
+| `GET /`                                     | Dashboard web           |
+| `GET /scan`                                 | Ejecuta escaneo de red  |
+| `GET /data`                                 | Datos completos en JSON |
+| `GET /api/alerts?risk=HIGH&process=firefox` | Alertas filtradas       |
+| `GET /export/csv`                           | Descargar CSV           |
+| `GET /export/pdf`                           | Descargar PDF           |
 
-## Clasificacion de riesgo
+## Clasificación de riesgo
 
 - **LOW** -- Proceso en whitelist (firefox, spotify, chrome, etc.)
-- **MEDIUM** -- Conexion externa a puerto comun (443, 80, 53, 22)
+- **MEDIUM** -- Conexión externa a puerto común (443, 80, 53, 22)
 - **HIGH** -- Puerto peligroso (4444, 1337, 31337), proceso sospechoso (nc, python, nmap) o IP externa en puerto alto
