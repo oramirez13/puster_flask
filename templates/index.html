@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puster SOC Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Puster 3.5 - Security Operations Dashboard</h1>
+
+    <div class="controls">
+        <div class="controls-row">
+            <button id="scanBtn" class="btn-primary">Run Scan</button>
+            <button id="pdfBtn" class="btn-secondary">Export PDF</button>
+            <button id="csvBtn" class="btn-secondary">Export CSV</button>
+            <label class="auto-refresh">
+                <input type="checkbox" id="autoRefresh"> Auto-refresh (30s)
+            </label>
+        </div>
+        <div class="controls-row">
+            <div class="filter-group">
+                <span class="filter-label">Filter by risk:</span>
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn filter-low" data-filter="LOW">LOW</button>
+                <button class="filter-btn filter-medium" data-filter="MEDIUM">MEDIUM</button>
+                <button class="filter-btn filter-high" data-filter="HIGH">HIGH</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="summary">
+        <div class="card total">
+            <h2>Total</h2>
+            <p id="total">0</p>
+        </div>
+        <div class="card low">
+            <h2>Low</h2>
+            <p id="low">0</p>
+        </div>
+        <div class="card medium">
+            <h2>Medium</h2>
+            <p id="medium">0</p>
+        </div>
+        <div class="card high">
+            <h2>High</h2>
+            <p id="high">0</p>
+        </div>
+    </div>
+
+    <div id="scanInfo" class="scan-info"></div>
+
+    <div class="chart-container">
+        <canvas id="riskChart"></canvas>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Process</th>
+                    <th>PID</th>
+                    <th>Protocol</th>
+                    <th>Remote IP</th>
+                    <th>Remote Port</th>
+                    <th>Local IP</th>
+                    <th>Local Port</th>
+                    <th>Risk</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
