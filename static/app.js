@@ -2,6 +2,10 @@ let riskChartInstance = null;
 let autoRefreshInterval = null;
 let currentFilter = "all";
 
+/* ===========================
+   SCAN BUTTON
+   =========================== */
+
 document.getElementById("scanBtn").addEventListener("click", async () => {
     const btn = document.getElementById("scanBtn");
     const info = document.getElementById("scanInfo");
@@ -9,6 +13,7 @@ document.getElementById("scanBtn").addEventListener("click", async () => {
     btn.textContent = "Scanning...";
     info.textContent = "";
     info.className = "scan-info";
+
     try {
         const resp = await fetch("/scan");
         const result = await resp.json();
@@ -23,10 +28,15 @@ document.getElementById("scanBtn").addEventListener("click", async () => {
         info.textContent = "Network error: " + e.message;
         info.className = "scan-info error";
     }
+
     btn.disabled = false;
     btn.textContent = "Run Scan";
     loadData();
 });
+
+/* ===========================
+   EXPORT BUTTONS
+   =========================== */
 
 document.getElementById("pdfBtn").addEventListener("click", () => {
     window.location = "/export/pdf";
@@ -35,6 +45,10 @@ document.getElementById("pdfBtn").addEventListener("click", () => {
 document.getElementById("csvBtn").addEventListener("click", () => {
     window.location = "/export/csv";
 });
+
+/* ===========================
+   AUTO-REFRESH
+   =========================== */
 
 document.getElementById("autoRefresh").addEventListener("change", function () {
     if (this.checked) {
@@ -47,30 +61,47 @@ document.getElementById("autoRefresh").addEventListener("change", function () {
     }
 });
 
+/* ===========================
+   RISK FILTER BUTTONS
+   =========================== */
+
 document.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
-        document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".filter-btn").forEach((b) => {
+            b.classList.remove("active");
+        });
         this.classList.add("active");
         currentFilter = this.dataset.filter;
         loadData();
     });
 });
 
+/* ===========================
+   LOAD DATA FROM API
+   =========================== */
+
 async function loadData() {
     let url = "/api/alerts";
     if (currentFilter !== "all") {
         url += "?risk=" + currentFilter;
     }
+
     try {
         const response = await fetch(url);
-        if (!response.ok) return;
+        if (!response.ok) {
+            showLoadError("No scan data available. Click 'Run Scan' first.");
+            return;
+        }
         const data = await response.json();
 
-        document.getElementById("total").innerText = data.summary.total_connections;
+        /* Update summary cards */
+        document.getElementById("total").innerText =
+            data.summary.total_connections;
         document.getElementById("low").innerText = data.summary.low;
         document.getElementById("medium").innerText = data.summary.medium;
         document.getElementById("high").innerText = data.summary.high;
 
+        /* Update table */
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
@@ -92,15 +123,31 @@ async function loadData() {
 
         if (data.alerts.length === 0) {
             const row = document.createElement("tr");
-            row.innerHTML = '<td colspan="8" style="text-align:center; color:#64748b;">No alerts match the current filter.</td>';
+            row.innerHTML =
+                '<td colspan="8" style="text-align:center; color:#64748b;">' +
+                "No alerts match the current filter.</td>";
             tableBody.appendChild(row);
         }
 
         renderChart(data.summary.low, data.summary.medium, data.summary.high);
     } catch (e) {
-        /* Silently fail on initial load if no data */
+        showLoadError("Failed to load data: " + e.message);
     }
 }
+
+/* ===========================
+   SHOW LOAD ERROR
+   =========================== */
+
+function showLoadError(message) {
+    const info = document.getElementById("scanInfo");
+    info.textContent = message;
+    info.className = "scan-info error";
+}
+
+/* ===========================
+   RENDER BAR CHART
+   =========================== */
 
 function renderChart(low, medium, high) {
     const ctx = document.getElementById("riskChart").getContext("2d");
@@ -133,10 +180,15 @@ function renderChart(low, medium, high) {
     });
 }
 
+/* ===========================
+   XSS PREVENTION
+   =========================== */
+
 function escapeHtml(text) {
     const div = document.createElement("div");
     div.textContent = text || "";
     return div.innerHTML;
 }
 
+/* Initial load */
 loadData();
